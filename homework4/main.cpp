@@ -1,43 +1,201 @@
 #include "graph.h"
+#include <iomanip>
 #include <iostream>
 #include <limits>
 #include <set>
+#include <stack>
 #include <vector>
-
+using namespace std;
 const int INF = std::numeric_limits<int>::max();
+// Function to print the shortest path from source to a destination
+// Function to print the shortest path from source to a destination
+void print_shortest_path(int source, int destination,
+                         const vector<int> &parent) {
+  // If the destination is unreachable (parent[destination] == -1 and it's not
+  // the source), or if the source and destination are the same
+  if (destination == source) {
+    cout << source;
+    return;
+  }
+  if (parent[destination] == -1) {
+    cout << "Path not found (unreachable)";
+    return;
+  }
 
-void dijkstra(const Graph &graph, int source, std::vector<int> &distances) {
-  int num_vertices = graph.size();
-  distances.assign(num_vertices, INF);
+  // Use a stack to reverse the path so it prints from source to destination
+  stack<int> path;
+  int current = destination;
 
-  // A set stores pairs of (distance, vertex)
-  // and automatically keeps them sorted by distance
-  std::set<std::pair<int, int>> active_vertices;
+  // Trace back from destination to source using the parent array
+  while (current != -1) {
+    path.push(current);
+    current = parent[current];
+  }
 
-  distances[source] = 0;
-  active_vertices.insert({0, source});
+  // Print the path from the stack
+  while (!path.empty()) {
+    cout << path.top();
+    path.pop();
+    if (!path.empty()) {
+      cout << " -> ";
+    }
+  }
+}
 
-  while (!active_vertices.empty()) {
-    // Extract the vertex with the minimum distance
-    int u = active_vertices.begin()->second;
-    active_vertices.erase(active_vertices.begin());
+// // Function to find the shortest paths and record predecessors
+// void dijkstra(const Graph &adj, int V, int source) {
+//   vector<int> dist(V, INF);
+//   vector<int> parent(V, -1);
+//   set<pair<int, int>> st;
 
-    // Check neighbors
-    for (const auto &edge : graph[u]) {
+//   dist[source] = 0;
+//   parent[source] = -1;
+//   st.insert({0, source});
+
+//   // --- TABLE GENERATION ---
+//   cout << "---------------------------------------------------------" <<
+//   endl; cout << "Dijkstra's Algorithm Trace (Source Node: " << source + 1 <<
+//   ")"
+//        << endl;
+//   cout << "---------------------------------------------------------" <<
+//   endl;
+
+//   // Print the header for the table
+//   cout << "Iter | Picked |";
+//   for (int i = 0; i < V; ++i) {
+//     cout << " Node " << i + 1 << " (Dist, Path) |";
+//   }
+//   cout << endl;
+//   cout << "---------------------------------------------------------" <<
+//   endl;
+
+//   // Print Initialization (Iter 0)
+//   cout << " 0   |   -    |";
+//   for (int i = 0; i < V; ++i) {
+//     if (i == source) {
+//       cout << "  0, -         |";
+//     } else {
+//       cout << "  INF, -       |";
+//     }
+//   }
+//   cout << endl;
+
+//   int iteration = 1;
+//   // -------------------------
+
+//   while (!st.empty()) {
+//     pair<int, int> current = *st.begin();
+//     st.erase(st.begin());
+
+//     int u_dist = current.first;
+//     int u = current.second;
+
+//     if (u_dist > dist[u]) {
+//       continue;
+//     }
+
+//     // --- TABLE ROW START ---
+//     // Print the current iteration and the picked node
+//     cout << setw(3) << iteration << " | " << setw(5) << u + 1 << "  |";
+
+//     // Relaxation step
+//     for (const auto &edge : adj[u]) {
+//       int v = edge.first;
+//       int weight = edge.second;
+
+//       if (dist[u] + weight < dist[v]) {
+//         if (dist[v] != INF) {
+//           st.erase({dist[v], v});
+//         }
+
+//         // Update distance and predecessor
+//         dist[v] = dist[u] + weight;
+//         parent[v] = u;
+
+//         st.insert({dist[v], v});
+//       }
+//     }
+
+//     // Print the updated distance array for this iteration
+//     for (int i = 0; i < V; ++i) {
+//       string dist_str;
+//       if (dist[i] == INF) {
+//         dist_str = "INF";
+//       } else {
+//         dist_str = to_string(dist[i]);
+//       }
+
+//       string parent_str = (parent[i] == -1) ? "-" : to_string(parent[i] + 1);
+
+//       // Format: Distance, Path
+//       cout << " " << setw(4) << dist_str << ", " << setw(2) << parent_str
+//            << "         |";
+//     }
+//     cout << endl;
+//     // --- TABLE ROW END ---
+
+//     iteration++;
+//   }
+
+//   // You can also add the final shortest path results here if needed.
+// }
+
+// Function to find the shortest paths and record predecessors
+void dijkstra(const Graph &adj, int V, int source) {
+  vector<int> dist(V, INF);
+
+  // Parent vector to store the predecessor of each node on the shortest path.
+  // Initialized to -1 to indicate no predecessor/unvisited.
+  vector<int> parent(V, -1);
+
+  set<pair<int, int>> st;
+
+  // Initialization
+  dist[source] = 0;
+  parent[source] = -1; // Source has no parent
+  st.insert({0, source});
+
+  while (!st.empty()) {
+    pair<int, int> current = *st.begin();
+    st.erase(st.begin());
+
+    int u_dist = current.first;
+    int u = current.second;
+
+    if (u_dist > dist[u]) {
+      continue;
+    }
+
+    // Relaxation step
+    for (const auto &edge : adj[u]) {
       int v = edge.first;
       int weight = edge.second;
 
-      // Relaxation step: a shorter path was found
-      if (distances[u] != INF && distances[u] + weight < distances[v]) {
-        // If v is already in the set, remove its old entry
-        if (distances[v] != INF) {
-          active_vertices.erase({distances[v], v});
+      if (dist[u] + weight < dist[v]) {
+        if (dist[v] != INF) {
+          st.erase({dist[v], v});
         }
 
-        // Update distance and insert the new, improved entry
-        distances[v] = distances[u] + weight;
-        active_vertices.insert({distances[v], v});
+        // *** CRITICAL MODIFICATION: RECORD THE PREDECESSOR ***
+        dist[v] = dist[u] + weight;
+        parent[v] = u; // The shortest path to 'v' now comes from 'u'
+
+        st.insert({dist[v], v});
       }
+    }
+  }
+
+  // Output the results, including the path
+  cout << "Shortest path results from source node " << source << ":" << endl;
+  cout << "-------------------------------------------" << endl;
+  for (int i = 0; i < V; ++i) {
+    cout << "Node " << i << ": ";
+    if (dist[i] == INF) {
+      cout << "Unreachable" << endl;
+    } else {
+      cout << "Distance = " << dist[i] << ", Path: ";
+      print_shortest_path(source, i, parent);
+      cout << endl;
     }
   }
 }
@@ -95,17 +253,17 @@ int main(int argc, char *argv[]) {
   // Optional: Print the graph to verify it was loaded correctly
   printGraph(graph);
 
-  std::vector<int> distances;
-  dijkstra(graph, source, distances);
+  dijkstra(graph, num_vertices, source);
 
-  std::cout << "\nShortest distances from source " << source << ":\n";
-  for (int i = 0; i < num_vertices; ++i) {
-    if (distances[i] == INF) {
-      std::cout << "To vertex " << i << ": INF\n";
-    } else {
-      std::cout << "To vertex " << i << ": " << distances[i] << "\n";
-    }
-  }
+  // std::cout << "\nShortest distances from source " << source << ":\n";
+  // for (int i = 0; i < num_vertices; ++i) {
+  //   if (distances[i] == INF) {
+  //     std::cout << "To vertex " << i << ": INF\n";
+  //   } else {
+  //     std::cout << "To vertex " << i << ": " << distances[i] << "\n";
+  //     print_shortest_path(source, i, parent)
+  //   }
+  // }
 
   return 0;
 }

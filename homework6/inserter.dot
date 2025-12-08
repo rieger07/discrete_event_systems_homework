@@ -1,0 +1,36 @@
+digraph AssemblyFSM {
+    rankdir = LR;
+    
+    // Node Definitions
+    node [shape = circle; style = filled; fillcolor = lightblue;];
+    S0 [label = "S0 (Idle)\nR=0, F, F";fillcolor = "yellow";];
+    S1 [label = "S1 (M1 Busy)\nR=0, B, F";];
+    S2 [label = "S2 (M2 Busy)\nR=0, F, B";];
+    S3 [label = "S3 (Both Busy)\nR=0, B, B";];
+    S4 [label = "S4 (One Ready)\nR=1, F, F";];
+    S5 [label = "S5 (R1, M1 Busy)\nR=1, B, F";];
+    S6 [label = "S6 (R1, M2 Busy)\nR=1, F, B";];
+    S7 [label = "S7 (Assy Ready)\nR=2, F, F";fillcolor = "green";];
+    S8 [label = "S8 (Assembly)\nAC Processing, R=0";];
+    
+    // Transitions based on Input (P_In)
+    S0 -> S1 [label = "P_In";];
+    S1 -> S3 [label = "P_In";];
+    S2 -> S3 [label = "P_In";];
+    S4 -> S5 [label = "P_In";];
+    S6 -> S5 [label = "P_In";];
+    
+    // Transitions based on M1 Completion (M1_Done)
+    S1 -> S4 [label = "M1_Done";];
+    S3 -> S6 [label = "M1_Done";];
+    S5 -> S7 [label = "M1_Done";];
+    
+    // Transitions based on M2 Completion (M2_Done)
+    S2 -> S4 [label = "M2_Done";];
+    S3 -> S5 [label = "M2_Done";];
+    S6 -> S7 [label = "M2_Done";];
+    
+    // Transitions based on Assembly Events
+    S7 -> S8 [label = "A_Start";];
+    S8 -> S0 [label = "AC_Done";];
+}

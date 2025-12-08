@@ -1,0 +1,24 @@
+digraph overall {
+    subgraph flashlight {
+        label = "Flashlight Decomposition";
+        "Glass (G)(1)" -> "Cover (C)(0)";
+        "Cover (C)(0)" -> "Head Housing (H)(3)";
+        "Bulb (B)(2)" -> "Head Housing (H)(3)";
+        "Head Housing (H)(3)" -> "Main Housing (M)(4)";
+        "Main Housing (M)(4)" -> "Spring (S)(5)";
+        "Spring (S)(5)" -> "Battery (A)(6)";
+        "Battery (A)(6)" -> "Head Housing (H)(3)";
+    }
+    
+    subgraph dfs {
+        label = "Depth First Search";
+        
+        0 -> 1 [label = "E_0,1";];
+        0 -> 3 [label = "E_0,3";];
+        2 -> 3 [label = "E_2,3";];
+        3 -> 6 [label = "E_3,6";];
+        3 -> 4 [label = "E_3,4";];
+        4 -> 5 [label = "E_4,5";];
+        5 -> 6 [label = "E_5,6";];
+    }
+}

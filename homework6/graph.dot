@@ -1,0 +1,61 @@
+digraph WashingMachineFSM {
+    // Graph attributes: Layout direction Left to Right (LR)
+    // rankdir = LR;
+    
+    // Node attributes: standard circle shape
+    node [shape = circle; style = "filled"; fillcolor = "lightblue";];
+    
+    // Define States and Moore Outputs (State / Output)
+    q0 [label = "q0: Idle\nOutput: Stop";fillcolor = "yellow";];
+    q1 [label = "q1: Soak\nOutput: Soak";];
+    q2 [label = "q2: Wash 1\nOutput: Wash";];
+    q3 [label = "q3: Rinse 1\nOutput: Rinse";];
+    q4 [label = "q4: Wash 2\nOutput: Wash";];
+    q5 [label = "q5: Rinse 2\nOutput: Rinse";];
+    q6 [label = "q6: Spin\nOutput: Spin";];
+    
+    // 1. Start/End Cycle Transitions
+    q0 -> q1 [label = "C (Coin)"; penwidth = 2;];
+    q6 -> q0 [label = "T (End)"; penwidth = 2;];
+    
+    // 2. Main Cycle Progression (T event)
+    
+    // Soak (q1) Branching
+    q1 -> q2 [label = "T ⋅ DW_ON";];
+    q1 -> q6 [label = "T ⋅ DW_OFF"; constraint = false;];
+    // Single Wash skip
+    
+    // Wash 1 (q2) to Rinse 1 (q3)
+    q2 -> q3 [label = "T";];
+    
+    // Rinse 1 (q3) Branching
+    q3 -> q4 [label = "T ⋅ DW_ON";];
+    q3 -> q6 [label = "T ⋅ DW_OFF"; constraint = false;];
+    // Single Wash complete
+    
+    // Wash 2 (q4) to Rinse 2 (q5)
+    q4 -> q5 [label = "T";];
+    
+    // Rinse 2 (q5) to Spin (q6)
+    q5 -> q6 [label = "T";];
+    
+    // 3. Interrupts (Reset)
+    q1 -> q0 [label = "Reset"; style = dashed; color = red;];
+    q2 -> q0 [label = "Reset"; style = dashed; color = red;];
+    q3 -> q0 [label = "Reset"; style = dashed; color = red;];
+    q4 -> q0 [label = "Reset"; style = dashed; color = red;];
+    q5 -> q0 [label = "Reset"; style = dashed; color = red;];
+    q6 -> q0 [label = "Reset"; style = dashed; color = red;];
+    
+    // 4. Waiting/Lid Control (Self-Loops)
+    // Implicitly handled by the fact that transitions only fire on T.
+    // Explicitly listing the self-loops for waiting and Lid control:
+    node [style = dotted;];
+    q0 -> q0 [label = "Reset / ¬C"; color = gray;];
+    q1 -> q1 [label = "¬T ∨ L_open"; color = gray;];
+    q2 -> q2 [label = "¬T ∨ L_open"; color = gray;];
+    q3 -> q3 [label = "¬T ∨ L_open"; color = gray;];
+    q4 -> q4 [label = "¬T ∨ L_open"; color = gray;];
+    q5 -> q5 [label = "¬T ∨ L_open"; color = gray;];
+    q6 -> q6 [label = "¬T ∨ L_open"; color = gray;];
+}

@@ -1,0 +1,10 @@
+digraph foo {
+    layout = dot;
+    rankdir = TB;
+    {rank="same"; "0-6"; 0}
+
+
+    "0-6" -> 0;
+    0->1->3->2
+
+    }

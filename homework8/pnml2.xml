@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+  <net id="TIntersection" type="http://www.pnml.org/version-2009/grammar/pnml">
+    <name><text>T-Intersection Traffic Light Controller</text></name>
+
+    <!-- Places: East signals -->
+    <place id="P_EG">
+      <name><text>East Green</text></name>
+      <graphics><position x="100" y="100"/></graphics>
+    </place>
+    <place id="P_EY">
+      <name><text>East Yellow</text></name>
+      <graphics><position x="100" y="200"/></graphics>
+    </place>
+    <place id="P_ER">
+      <name><text>East Red</text></name>
+      <graphics><position x="100" y="300"/></graphics>
+    </place>
+    <place id="P_RG">
+      <name><text>East Right-turn Green</text></name>
+      <graphics><position x="100" y="400"/></graphics>
+    </place>
+
+    <!-- Places: North signals -->
+    <place id="P_NG">
+      <name><text>North Green</text></name>
+      <graphics><position x="400" y="100"/></graphics>
+    </place>
+    <place id="P_NY">
+      <name><text>North Yellow</text></name>
+      <graphics><position x="400" y="200"/></graphics>
+    </place>
+    <place id="P_NR">
+      <name><text>North Red</text></name>
+      <graphics><position x="400" y="300"/></graphics>
+    </place>
+    <place id="P_LG">
+      <name><text>Left-turn Green</text></name>
+      <graphics><position x="400" y="400"/></graphics>
+    </place>
+
+    <!-- Places: South signals -->
+    <place id="P_SG">
+      <name><text>South Green</text></name>
+      <graphics><position x="700" y="100"/></graphics>
+    </place>
+    <place id="P_SY">
+      <name><text>South Yellow</text></name>
+      <graphics><position x="700" y="200"/></graphics>
+    </place>
+    <place id="P_SR">
+      <name><text>South Red</text></name>
+      <graphics><position x="700" y="300"/></graphics>
+    </place>
+
+    <!-- Control places -->
+    <place id="P_INIT">
+      <name><text>Initialization</text></name>
+      <graphics><position x="250" y="500"/></graphics>
+    </place>
+    <place id="P_Tm">
+      <name><text>Timer m=20s</text></name>
+      <graphics><position x="250" y="600"/></graphics>
+    </place>
+    <place id="P_TdE">
+      <name><text>Timer d=10s East</text></name>
+      <graphics><position x="250" y="700"/></graphics>
+    </place>
+    <place id="P_TdNS">
+      <name><text>Timer d=10s N/S</text></name>
+      <graphics><position x="550" y="700"/></graphics>
+    </place>
+    <place id="P_TMaxNS">
+      <name><text>Timer M=60s N/S</text></name>
+      <graphics><position x="550" y="600"/></graphics>
+    </place>
+    <place id="P_NSWindow">
+      <name><text>N/S Window Active</text></name>
+      <graphics><position x="550" y="500"/></graphics>
+    </place>
+
+    <!-- Transitions -->
+    <transition id="T_Start">
+      <name><text>Start Cycle</text></name>
+      <graphics><position x="250" y="100"/></graphics>
+    </transition>
+    <transition id="T_EG_Expire">
+      <name><text>East Green Expire</text></name>
+      <graphics><position x="250" y="200"/></graphics>
+    </transition>
+    <transition id="T_EY_On">
+      <name><text>East Yellow On</text></name>
+      <graphics><position x="250" y="300"/></graphics>
+    </transition>
+    <transition id="T_EY_Expire">
+      <name><text>East Yellow Expire</text></name>
+      <graphics><position x="250" y="400"/></graphics>
+    </transition>
+
+    <transition id="T_Branch_L0">
+      <name><text>Branch L=0</text></name>
+      <graphics><position x="550" y="200"/></graphics>
+    </transition>
+    <transition id="T_Branch_L1">
+      <name><text>Branch L=1</text></name>
+      <graphics><position x="550" y="300"/></graphics>
+    </transition>
+    <transition id="T_End_LG_RG">
+      <name><text>End LG/RG</text></name>
+      <graphics><position x="550" y="400"/></graphics>
+    </transition>
+
+    <transition id="T_NS_Timeout">
+      <name><text>N/S Timeout</text></name>
+      <graphics><position x="850" y="200"/></graphics>
+    </transition>
+    <transition id="T_NS_Y_Expire">
+      <name><text>N/S Yellow Expire</text></name>
+      <graphics><position x="850" y="300"/></graphics>
+    </transition>
+    <transition id="T_Reset">
+      <name><text>Reset Cycle</text></name>
+      <graphics><position x="850" y="400"/></graphics>
+    </transition>
+
+    <!-- Arcs (sample subset, expand as needed) -->
+    <arc id="A1" source="P_INIT" target="T_Start"/>
+    <arc id="A2" source="T_Start" target="P_EG"/>
+    <arc id="A3" source="T_Start" target="P_NR"/>
+    <arc id="A4" source="T_Start" target="P_SR"/>
+    <arc id="A5" source="T_Start" target="P_Tm"/>
+
+    <arc id="A6" source="P_Tm" target="T_EG_Expire"/>
+    <arc id="A7" source="T_EG_Expire" target="P_EY"/>
+    <arc id="A8" source="T_EG_Expire" target="P_ER"/>
+    <arc id="A9" source="T_EG_Expire" target="P_TdE"/>
+
+    <arc id="A10" source="P_ER" target="T_Branch_L0"/>
+    <arc id="A11" source="T_Branch_L0" target="P_NG"/>
+    <arc id="A12" source="T_Branch_L0" target="P_SG"/>
+    <arc id="A13" source="T_Branch_L0" target="P_TMaxNS"/>
+    <arc id="A14" source="T_Branch_L0" target="P_NSWindow"/>
+
+    <arc id="A15" source="P_ER" target="T_Branch_L1"/>
+    <arc id="A16" source="T_Branch_L1" target="P_NG"/>
+    <arc id="A17" source="T_Branch_L1" target="P_LG"/>
+    <arc id="A18" source="T_Branch_L1" target="P_RG"/>
+    <arc id="A19" source="T_Branch_L1" target="P_NSWindow"/>
+
+    <arc id="A20" source="P_TMaxNS" target="T_NS_Timeout"/>
+    <arc id="A21" source="T_NS_Timeout" target="P_NY"/>
+    <arc id="A22" source="T_NS_Timeout" target="P_SY"/>
+    <arc id="A23" source="T_NS_Timeout" target="P_TdNS"/>
+
+    <arc id="A24" source="P_TdNS" target="T_NS_Y_Expire"/>
+    <arc id="A25" source="T_NS_Y_Expire" target="P_NR"/>
+    <arc id="A26" source="T_NS_Y_Expire" target="P_SR"/>
+
+    <arc id="A27" source="P_NR" target="T_Reset"/>
+    <arc id="A28" source="P_SR" target="T_Reset"/>
+    <arc id="A29" source="T_Reset" target="P_EG"/>
+    <arc id="A30" source="T_Reset" target="P_NR"/>
+    <arc id="A31" source="T_Reset" target="P_SR"/>
+    <arc id="A32" source="T_Reset" target="P_Tm"/>
+
+  </net>
+</pnml>
+

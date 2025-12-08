@@ -1,0 +1,24 @@
+digraph TrafficControlSystem {
+    rankdir = LR;
+    node [shape = box; style = filled; fillcolor = lightgray;];
+    
+    // Inputs
+    SensorInputs [label = "Sensor Inputs\n(E, L)";];
+    TimerUnit [label = "Timer Unit\n(m, d, M)";];
+    
+    // State and ROM
+    StateRegister [label = "State Register\n(Current State)";];
+    ROM [label = "ROM\n256 x 15 bits\n[Next State + 12 Lights]";];
+    Decoder [label = "Decoder\n(Controls Lights)";];
+    
+    // Outputs
+    LightController [label = "Light Controller\n(EG, EY, ER, NG, NY, NR, SG, SY, SR, LG, RG)";];
+    
+    // Connections
+    SensorInputs -> ROM;
+    TimerUnit -> ROM;
+    StateRegister -> ROM;
+    ROM -> StateRegister [label = "Next State";];
+    ROM -> Decoder;
+    Decoder -> LightController;
+}

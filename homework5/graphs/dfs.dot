@@ -1,0 +1,12 @@
+digraph foo {
+    subgraph dfs2 {
+        0 [xlabel = "p[0]=0";];
+        0 -> 1 [label = "p[1]=1";];
+        0 -> 3 [label = "p[2]=2";];
+        3 -> 2 [label = "p[3]=3";];
+        3 -> 4 [label = "p[4]=4";];
+        4 -> 5 [label = "p[5]=5";];
+        5 -> 6 [label = "p[6]=6";];
+        6 -> 3 [style = dashed;];
+    }
+}
