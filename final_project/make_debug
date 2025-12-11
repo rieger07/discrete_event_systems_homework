@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+SRC="src/main.cpp"
+OUT="main_debug"
+INCLUDE_DIR="src"
+
+# Compile with debug symbols (-g) and no optimizations (-O0)
+g++ -std=c++17 -Wall -g -O0 -I"$INCLUDE_DIR" "$SRC" -o "$OUT"
+
+echo "Debug build successful. Run with ./$OUT or debug with gdb ./$OUT"

@@ -3,13 +3,13 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/homework5/**",
-                "${workspaceFolder}/3pp/eigen-5.0.0"
+                "${workspaceFolder}/final_project/**",
+                // "${workspaceFolder}/3pp/eigen-5.0.0"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
-            "cppStandard": "gnu++14",
+            "cppStandard": "c++17",
             "intelliSenseMode": "linux-gcc-x64"
         }
     ],

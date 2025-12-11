@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Exit immediately if a command fails
+set -e
+
+# Define source and output
+SRC="src/main.cpp"
+OUT="final"
+
+# Add include directory if headers are in src/
+INCLUDE_DIR="src"
+
+# Compile with g++
+g++ -std=c++17 -Wall -I"$INCLUDE_DIR" "$SRC" -o "$OUT"
+
+echo "Compilation successful. Run with ./$OUT"

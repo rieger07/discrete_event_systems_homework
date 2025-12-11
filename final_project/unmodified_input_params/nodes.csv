@@ -1,0 +1,8 @@
+#node_name,id,is_charging_station,is_target_site,threat_level
+S,0,false,true,0
+1,1,false,true,0
+2,2,false,true,0
+3,3,false,true,0
+4,4,false,true,0
+c1,5,true,false,5
+c2,6,true,false,10
